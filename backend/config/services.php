@@ -42,4 +42,13 @@ return [
         'season'   => (int) env('API_FOOTBALL_SEASON', 2026),
     ],
 
+    // ─── Google Gemini Flash ─────────────────────────────────────────────────
+    // Model is locked to gemini-1.5-flash — never gemini-pro in production.
+    // See CONTEXT.md §1 (Restrições Absolutas) and §4 (.env).
+    'gemini' => [
+        'key'        => env('GEMINI_API_KEY'),
+        'model'      => env('GEMINI_MODEL', 'gemini-1.5-flash'),
+        'max_tokens' => (int) env('GEMINI_MAX_TOKENS', 1024),
+    ],
+
 ];
