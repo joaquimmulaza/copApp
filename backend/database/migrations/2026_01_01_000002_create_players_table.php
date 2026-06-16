@@ -12,14 +12,19 @@ return new class extends Migration
      * Run the migrations.
      *
      * Creates the `players` table to store squad members of each World Cup team.
-     * Composite index on (team_id, position) optimises position-based roster queries.
+     *
+     * Note on FK + index pattern:
+     *   foreignId()->constrained()->index() can generate conflicting constraint names in
+     *   PostgreSQL when a composite index on the same column follows later in the schema.
+     *   FK is declared via two separate statements; the composite index at the end covers
+     *   team_id as the leading column, so no individual index on team_id is needed.
      */
     public function up(): void
     {
         Schema::create('players', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('api_football_id')->unique()->index();
-            $table->foreignId('team_id')->constrained()->cascadeOnDelete()->index();
+            $table->unsignedInteger('api_football_id')->unique();
+            $table->unsignedBigInteger('team_id');
             $table->string('name', 100);
             $table->string('firstname', 80)->nullable();
             $table->string('lastname', 80)->nullable();
@@ -33,7 +38,15 @@ return new class extends Migration
             $table->string('number')->nullable();
             $table->timestamps();
 
+            // FK constraint declared separately to avoid auto-generated name collisions
+            $table->foreign('team_id')
+                  ->references('id')
+                  ->on('teams')
+                  ->cascadeOnDelete();
+
             // Composite index: optimises lineup and position-based queries
+            // team_id is the leading column — covers solo team_id lookups as well
+            $table->index('api_football_id');
             $table->index(['team_id', 'position']);
         });
     }
