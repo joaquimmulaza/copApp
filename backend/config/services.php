@@ -31,4 +31,15 @@ return [
         ],
     ],
 
+    // ─── API-Football ────────────────────────────────────────────────────────
+    // Credentials are read exclusively from environment variables.
+    // NEVER hard-code keys in this file.
+    // See CONTEXT.md §4 for the full list of required .env variables.
+    'api_football' => [
+        'key'      => env('API_FOOTBALL_KEY'),
+        'base_url' => env('API_FOOTBALL_BASE_URL', 'https://v3.football.api-sports.io'),
+        'league'   => (int) env('API_FOOTBALL_LEAGUE', 1),
+        'season'   => (int) env('API_FOOTBALL_SEASON', 2026),
+    ],
+
 ];
