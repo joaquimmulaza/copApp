@@ -11,6 +11,7 @@ Thumbs.db
 # Agentes / AI (não rastrear configurações privadas)
 .agent/
 .claude/
+CONTEXT.md
 
 # Credenciais — NUNCA commitar
 *.env
