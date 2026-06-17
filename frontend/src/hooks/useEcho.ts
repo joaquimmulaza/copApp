@@ -22,7 +22,7 @@ export const useEcho = (fixtureApiId: number | null) => {
     const echo = getEchoInstance();
     if (!echo) return;
 
-    const channelName = `fixture.${fixtureApiId}`;
+    const channelName = `fixtures.${fixtureApiId}`;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const channel = echo.channel(channelName);
     channelRef.current = channel;
