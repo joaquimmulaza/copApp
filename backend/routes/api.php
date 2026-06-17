@@ -6,6 +6,7 @@ use App\Http\Controllers\FixtureController;
 use App\Http\Controllers\GeminiController;
 use App\Http\Controllers\InjuryController;
 use App\Http\Controllers\LineupController;
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\StandingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,3 +42,11 @@ Route::get('/injuries', [InjuryController::class, 'index']);
 // ─── RF04 — Group Standings ───────────────────────────────────────────────────
 // GET /api/standings
 Route::get('/standings', [StandingController::class, 'index']);
+
+// ─── RF02 — Push Notification Subscriptions ──────────────────────────────────
+// POST /api/push-subscriptions
+// Body: { fcm_token: string, device_type?: "web" | "ios" | "android" }
+// Upserts the FCM token in `push_subscriptions` and renews `last_active_at`.
+// Public route — no Sanctum auth required (FCM tokens are not secrets).
+Route::post('/push-subscriptions', [PushSubscriptionController::class, 'store']);
+

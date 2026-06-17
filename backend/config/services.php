@@ -51,4 +51,13 @@ return [
         'max_tokens' => (int) env('GEMINI_MAX_TOKENS', 1024),
     ],
 
+    // ─── Firebase Cloud Messaging (FCM) ──────────────────────────────────────
+    // The credentials path points to the Service Account JSON file.
+    // The file path is NEVER logged; only the basename is used in error messages.
+    // See CONTEXT.md §4 (FIREBASE_CREDENTIALS_PATH) and §12 RF02.
+    'firebase' => [
+        'project_id'       => env('FIREBASE_PROJECT_ID'),
+        'credentials_path' => env('FIREBASE_CREDENTIALS_PATH'),
+    ],
+
 ];

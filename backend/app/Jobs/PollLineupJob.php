@@ -7,6 +7,7 @@ namespace App\Jobs;
 use App\Events\LineupConfirmed;
 use App\Services\ApiFootballQuotaServiceInterface;
 use App\Services\ApiFootballService;
+use App\Services\FcmNotificationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -121,12 +122,14 @@ class PollLineupJob implements ShouldQueue
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * @param  int  $fixtureApiId  ID do jogo na API-Football (api_football_id na tabela fixtures).
+     * @param  int                    $fixtureApiId  ID do jogo na API-Football (api_football_id na tabela fixtures).
+     * @param  FcmNotificationService $fcmService    Serviço de push notifications FCM (RF02).
      */
     public function __construct(
         private readonly int $fixtureApiId,
         private readonly ApiFootballQuotaServiceInterface $quotaService,
         private readonly ApiFootballService $apiService,
+        private readonly FcmNotificationService $fcmService,
     ) {}
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -447,6 +450,25 @@ class PollLineupJob implements ShouldQueue
             'fixture_id'     => $fixtureId,
             'api_fixture_id' => $this->fixtureApiId,
             'channel'        => "fixtures.{$fixtureId}",
+        ]);
+
+        // ── Disparar notificação Push via FCM (RF02) ──────────────────────────
+        // Executado após o WebSocket para manter a mesma ordem de prioridade:
+        // WebSocket (tempo real no browser) → FCM (utilizadores com app fechada).
+        // Os nomes das equipas são extraídos do payload do evento já construído.
+        $homeTeamName = (string) ($eventPayload['home_team']['name'] ?? 'Equipa A');
+        $awayTeamName = (string) ($eventPayload['away_team']['name'] ?? 'Equipa B');
+
+        $this->fcmService->sendLineupConfirmedNotification(
+            fixtureId: $fixtureId,
+            homeTeam:  $homeTeamName,
+            awayTeam:  $awayTeamName,
+        );
+
+        Log::info('[PollLineupJob] Push FCM solicitado ao FcmNotificationService.', [
+            'fixture_id'  => $fixtureId,
+            'home_team'   => $homeTeamName,
+            'away_team'   => $awayTeamName,
         ]);
     }
 
