@@ -9,6 +9,6 @@ const StandingsPage = () => (
       Tabelas de classificação — em desenvolvimento.
     </p>
   </div>
-)
+);
 
-export default StandingsPage
+export default StandingsPage;

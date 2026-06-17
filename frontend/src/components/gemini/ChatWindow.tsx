@@ -5,6 +5,8 @@ export const ChatWindow = () => (
     aria-label="Chat com Gemini IA"
     className="flex flex-col h-full card-glass p-4"
   >
-    <p className="text-muted-foreground">Chat com Gemini Flash — em desenvolvimento.</p>
+    <p className="text-muted-foreground">
+      Chat com Gemini Flash — em desenvolvimento.
+    </p>
   </section>
-)
+);

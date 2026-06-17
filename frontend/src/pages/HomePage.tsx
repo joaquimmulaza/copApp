@@ -2,48 +2,48 @@
 // Integrates useFixtures with FixtureList, providing tab-based
 // filtering (Hoje / Todos / Por fase) in the Quiet Luxury style.
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { CalendarDays, Layers } from 'lucide-react'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { useFixtures } from '@/hooks/useFixtures'
-import { FixtureList } from '@/components/fixtures/FixtureList'
-import { cn } from '@/lib/utils'
-import { fadeIn, fadeInTransition } from '@/lib/animations'
-import type { FixtureStage } from '@/types/fixture'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { CalendarDays, Layers } from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { useFixtures } from "@/hooks/useFixtures";
+import { FixtureList } from "@/components/fixtures/FixtureList";
+import { cn } from "@/lib/utils";
+import { fadeIn, fadeInTransition } from "@/lib/animations";
+import type { FixtureStage } from "@/types/fixture";
 
 // ─── Filter tabs ──────────────────────────────────────────────
-type FilterTab = 'today' | 'all' | 'r32' | 'r16' | 'qf' | 'sf' | 'f'
+type FilterTab = "today" | "all" | "r32" | "r16" | "qf" | "sf" | "f";
 
 const TABS: { id: FilterTab; label: string }[] = [
-  { id: 'today', label: 'Hoje' },
-  { id: 'all',   label: 'Todos' },
-  { id: 'r32',   label: 'Oitavos' },
-  { id: 'r16',   label: 'Quartas' },
-  { id: 'qf',    label: 'Semis' },
-  { id: 'sf',    label: 'Final' },
-]
+  { id: "today", label: "Hoje" },
+  { id: "all", label: "Todos" },
+  { id: "r32", label: "Oitavos" },
+  { id: "r16", label: "Quartas" },
+  { id: "qf", label: "Semis" },
+  { id: "sf", label: "Final" },
+];
 
 // ─── Build query params from selected tab ────────────────────
 function buildParams(tab: FilterTab) {
-  if (tab === 'today') {
-    return { date: format(new Date(), 'yyyy-MM-dd') }
+  if (tab === "today") {
+    return { date: format(new Date(), "yyyy-MM-dd") };
   }
-  if (tab === 'all') {
-    return undefined
+  if (tab === "all") {
+    return undefined;
   }
-  return { stage: tab as FixtureStage }
+  return { stage: tab as FixtureStage };
 }
 
 // ─── Page component ───────────────────────────────────────────
 const HomePage = () => {
-  const [activeTab, setActiveTab] = useState<FilterTab>('today')
+  const [activeTab, setActiveTab] = useState<FilterTab>("today");
 
-  const params = buildParams(activeTab)
-  const { data, isLoading, isError, error, refetch } = useFixtures(params)
+  const params = buildParams(activeTab);
+  const { data, isLoading, isError, error, refetch } = useFixtures(params);
 
-  const today = format(new Date(), "d 'de' MMMM yyyy", { locale: ptBR })
+  const today = format(new Date(), "d 'de' MMMM yyyy", { locale: ptBR });
 
   return (
     <div className="animate-fade-in py-6">
@@ -93,7 +93,7 @@ const HomePage = () => {
           aria-label="Fase do torneio"
         >
           {TABS.map((tab) => {
-            const active = activeTab === tab.id
+            const active = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
@@ -103,17 +103,17 @@ const HomePage = () => {
                 aria-controls="fixture-panel"
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  'shrink-0 px-3 py-1.5 rounded-md text-xs font-sans font-medium',
-                  'transition-all duration-150 outline-none',
-                  'focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1',
+                  "shrink-0 px-3 py-1.5 rounded-md text-xs font-sans font-medium",
+                  "transition-all duration-150 outline-none",
+                  "focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1",
                   active
-                    ? 'bg-gold text-background'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-overlay',
+                    ? "bg-gold text-background"
+                    : "text-muted-foreground hover:text-foreground hover:bg-surface-overlay",
                 )}
               >
                 {tab.label}
               </button>
-            )
+            );
           })}
         </div>
       </motion.nav>
@@ -131,13 +131,15 @@ const HomePage = () => {
           errorMessage={
             error instanceof Error
               ? error.message
-              : 'Erro ao carregar os jogos.'
+              : "Erro ao carregar os jogos."
           }
-          onRetry={() => { void refetch() }}
+          onRetry={() => {
+            void refetch();
+          }}
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

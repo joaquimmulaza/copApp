@@ -1,6 +1,6 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import type { ReactNode } from 'react'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import type { ReactNode } from "react";
 
 // Configure global defaults for all queries in the app
 const queryClient = new QueryClient({
@@ -21,10 +21,10 @@ const queryClient = new QueryClient({
       retry: 0,
     },
   },
-})
+});
 
 interface QueryProviderProps {
-  readonly children: ReactNode
+  readonly children: ReactNode;
 }
 
 export const QueryProvider = ({ children }: QueryProviderProps) => (
@@ -35,4 +35,4 @@ export const QueryProvider = ({ children }: QueryProviderProps) => (
       <ReactQueryDevtools initialIsOpen={false} position="bottom" />
     )}
   </QueryClientProvider>
-)
+);

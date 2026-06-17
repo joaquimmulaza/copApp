@@ -1,9 +1,9 @@
-import { useParams } from 'react-router-dom'
+import { useParams } from "react-router-dom";
 
 // FixturePage — Match detail with lineups, AI analysis, and live score
 // TODO (next session): compose LineupGrid + TacticalFlash + LiveScore
 const FixturePage = () => {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>();
 
   return (
     <div className="animate-fade-in">
@@ -14,7 +14,7 @@ const FixturePage = () => {
         Escalação e análise tática — em desenvolvimento.
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default FixturePage
+export default FixturePage;

@@ -1,19 +1,19 @@
 // Navbar — glassmorphism top navigation
 // Applies .nav-glass utility from index.css
-import { Link, NavLink } from 'react-router-dom'
-import { Trophy, Calendar, Shield, HeartPulse, Bot } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useThemeStore } from '@/stores/themeStore'
+import { Link, NavLink } from "react-router-dom";
+import { Trophy, Calendar, Shield, HeartPulse, Bot } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useThemeStore } from "@/stores/themeStore";
 
 const NAV_ITEMS = [
-  { to: '/',          label: 'Jogos',        icon: Calendar },
-  { to: '/standings', label: 'Classificação', icon: Trophy },
-  { to: '/injuries',  label: 'Desfalques',   icon: HeartPulse },
-  { to: '/ai',        label: 'Análise IA',   icon: Bot },
-] as const
+  { to: "/", label: "Jogos", icon: Calendar },
+  { to: "/standings", label: "Classificação", icon: Trophy },
+  { to: "/injuries", label: "Desfalques", icon: HeartPulse },
+  { to: "/ai", label: "Análise IA", icon: Bot },
+] as const;
 
 export const Navbar = () => {
-  const { toggleTheme, theme } = useThemeStore()
+  const { toggleTheme, theme } = useThemeStore();
 
   return (
     <header
@@ -43,14 +43,14 @@ export const Navbar = () => {
             <NavLink
               key={to}
               to={to}
-              end={to === '/'}
+              end={to === "/"}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium',
-                  'transition-colors duration-150',
+                  "flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium",
+                  "transition-colors duration-150",
                   isActive
-                    ? 'text-gold bg-surface-overlay'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-overlay'
+                    ? "text-gold bg-surface-overlay"
+                    : "text-muted-foreground hover:text-foreground hover:bg-surface-overlay",
                 )
               }
             >
@@ -64,12 +64,12 @@ export const Navbar = () => {
         <button
           type="button"
           onClick={toggleTheme}
-          aria-label={`Mudar para modo ${theme === 'dark' ? 'claro' : 'escuro'}`}
+          aria-label={`Mudar para modo ${theme === "dark" ? "claro" : "escuro"}`}
           className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-surface-overlay transition-colors"
         >
-          {theme === 'dark' ? '☀️' : '🌙'}
+          {theme === "dark" ? "☀️" : "🌙"}
         </button>
       </div>
     </header>
-  )
-}
+  );
+};

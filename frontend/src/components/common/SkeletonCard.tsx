@@ -1,12 +1,12 @@
 // SkeletonCard — shimmer loading placeholder for fixture cards
 // Uses the .skeleton CSS class from index.css (gradient wave, never blink).
 // Strictly no animate-pulse — that causes a flicker. Only shimmer allowed.
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 interface SkeletonCardProps {
-  readonly className?: string
+  readonly className?: string;
   /** Number of skeleton rows to render (default 1). Used in FixtureList. */
-  readonly count?: number
+  readonly count?: number;
 }
 
 function SingleSkeleton({ className }: { className?: string }) {
@@ -15,7 +15,7 @@ function SingleSkeleton({ className }: { className?: string }) {
       role="status"
       aria-label="A carregar jogo..."
       aria-busy="true"
-      className={cn('card-glass p-4', className)}
+      className={cn("card-glass p-4", className)}
     >
       {/* Teams row */}
       <div className="flex items-center justify-between">
@@ -42,13 +42,13 @@ function SingleSkeleton({ className }: { className?: string }) {
 
       <span className="sr-only">A carregar conteúdo do jogo</span>
     </div>
-  )
+  );
 }
 
 export const SkeletonCard = ({ className, count = 1 }: SkeletonCardProps) => {
-  const props = className !== undefined ? { className } : {}
+  const props = className !== undefined ? { className } : {};
 
-  if (count === 1) return <SingleSkeleton {...props} />
+  if (count === 1) return <SingleSkeleton {...props} />;
 
   return (
     <div className="flex flex-col gap-3" aria-label="A carregar jogos...">
@@ -56,5 +56,5 @@ export const SkeletonCard = ({ className, count = 1 }: SkeletonCardProps) => {
         <SingleSkeleton key={i} {...props} />
       ))}
     </div>
-  )
-}
+  );
+};

@@ -1,22 +1,22 @@
-import { useQuery } from '@tanstack/react-query'
-import { api } from '@/lib/axios'
-import { QUERY_KEYS, LIVE_POLL_INTERVAL } from '@/lib/constants'
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/axios";
+import { QUERY_KEYS, LIVE_POLL_INTERVAL } from "@/lib/constants";
 import type {
   FixtureListResponse,
   FixtureStage,
   FixtureSummary,
-} from '@/types/fixture'
+} from "@/types/fixture";
 
 // ─── Filter parameters accepted by useFixtures ───────────────
 export interface UseFixturesParams {
   /** ISO date string "YYYY-MM-DD" — filter fixtures to a specific day */
-  readonly date?: string
+  readonly date?: string;
   /** Comma-separated status codes e.g. "NS,1H,2H" */
-  readonly status?: string
+  readonly status?: string;
   /** Group letter "A" … "L" — filter by World Cup group */
-  readonly group?: string
+  readonly group?: string;
   /** Tournament stage — "group" | "r32" | "r16" | "qf" | "sf" | "f" */
-  readonly stage?: FixtureStage
+  readonly stage?: FixtureStage;
 }
 
 // ─── Hook ────────────────────────────────────────────────────
@@ -24,10 +24,10 @@ export const useFixtures = (params?: UseFixturesParams) =>
   useQuery({
     queryKey: QUERY_KEYS.fixtures(params),
     queryFn: async (): Promise<FixtureSummary[]> => {
-      const { data } = await api.get<FixtureListResponse>('/fixtures', {
+      const { data } = await api.get<FixtureListResponse>("/fixtures", {
         params,
-      })
-      return data.data
+      });
+      return data.data;
     },
     // Cache fixtures for 30 s by default.
     // When a status filter includes live statuses the component should
@@ -38,5 +38,4 @@ export const useFixtures = (params?: UseFixturesParams) =>
     // user gets fresh data without manual reload.
     refetchInterval: LIVE_POLL_INTERVAL,
     refetchIntervalInBackground: false,
-  })
-
+  });

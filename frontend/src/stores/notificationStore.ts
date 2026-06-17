@@ -1,19 +1,19 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { STORAGE_KEYS } from '@/lib/constants'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 interface NotificationStore {
-  readonly fcmToken: string | null
-  readonly isPermissionGranted: boolean
-  readonly subscribedFixtures: number[]
-  readonly subscribedTeams: number[]
+  readonly fcmToken: string | null;
+  readonly isPermissionGranted: boolean;
+  readonly subscribedFixtures: number[];
+  readonly subscribedTeams: number[];
 
-  readonly setFcmToken: (token: string) => void
-  readonly setPermissionGranted: (granted: boolean) => void
-  readonly subscribeToFixture: (fixtureApiId: number) => void
-  readonly unsubscribeFromFixture: (fixtureApiId: number) => void
-  readonly subscribeToTeam: (teamApiId: number) => void
-  readonly unsubscribeFromTeam: (teamApiId: number) => void
+  readonly setFcmToken: (token: string) => void;
+  readonly setPermissionGranted: (granted: boolean) => void;
+  readonly subscribeToFixture: (fixtureApiId: number) => void;
+  readonly unsubscribeFromFixture: (fixtureApiId: number) => void;
+  readonly subscribeToTeam: (teamApiId: number) => void;
+  readonly unsubscribeFromTeam: (teamApiId: number) => void;
 }
 
 export const useNotificationStore = create<NotificationStore>()(
@@ -26,8 +26,7 @@ export const useNotificationStore = create<NotificationStore>()(
 
       setFcmToken: (token) => set({ fcmToken: token }),
 
-      setPermissionGranted: (granted) =>
-        set({ isPermissionGranted: granted }),
+      setPermissionGranted: (granted) => set({ isPermissionGranted: granted }),
 
       subscribeToFixture: (fixtureApiId) =>
         set((state) => ({
@@ -39,7 +38,7 @@ export const useNotificationStore = create<NotificationStore>()(
       unsubscribeFromFixture: (fixtureApiId) =>
         set((state) => ({
           subscribedFixtures: state.subscribedFixtures.filter(
-            (id) => id !== fixtureApiId
+            (id) => id !== fixtureApiId,
           ),
         })),
 
@@ -53,18 +52,18 @@ export const useNotificationStore = create<NotificationStore>()(
       unsubscribeFromTeam: (teamApiId) =>
         set((state) => ({
           subscribedTeams: state.subscribedTeams.filter(
-            (id) => id !== teamApiId
+            (id) => id !== teamApiId,
           ),
         })),
     }),
     {
       name: STORAGE_KEYS.FCM_TOKEN,
       partialize: (state) => ({
-        fcmToken:            state.fcmToken,
+        fcmToken: state.fcmToken,
         isPermissionGranted: state.isPermissionGranted,
-        subscribedFixtures:  state.subscribedFixtures,
-        subscribedTeams:     state.subscribedTeams,
+        subscribedFixtures: state.subscribedFixtures,
+        subscribedTeams: state.subscribedTeams,
       }),
-    }
-  )
-)
+    },
+  ),
+);

@@ -1,10 +1,10 @@
 // PageWrapper — standard page layout shell
 // Applies fixed navbar offset and max-width constraint
-import type { ReactNode } from 'react'
-import { Navbar } from './Navbar'
+import type { ReactNode } from "react";
+import { Navbar } from "./Navbar";
 
 interface PageWrapperProps {
-  readonly children: ReactNode
+  readonly children: ReactNode;
 }
 
 export const PageWrapper = ({ children }: PageWrapperProps) => (
@@ -18,4 +18,4 @@ export const PageWrapper = ({ children }: PageWrapperProps) => (
       {children}
     </main>
   </>
-)
+);

@@ -1,10 +1,10 @@
-import { useCallback } from 'react'
-import { getToken } from 'firebase/messaging'
-import { getFirebaseMessaging } from '@/lib/firebase'
-import { useNotificationStore } from '@/stores/notificationStore'
-import { api } from '@/lib/axios'
+import { useCallback } from "react";
+import { getToken } from "firebase/messaging";
+import { getFirebaseMessaging } from "@/lib/firebase";
+import { useNotificationStore } from "@/stores/notificationStore";
+import { api } from "@/lib/axios";
 
-const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY
+const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
 export const usePushNotifications = () => {
   const {
@@ -14,7 +14,7 @@ export const usePushNotifications = () => {
     setPermissionGranted,
     subscribeToFixture,
     unsubscribeFromFixture,
-  } = useNotificationStore()
+  } = useNotificationStore();
 
   /**
    * Requests notification permission and registers the FCM token
@@ -22,61 +22,61 @@ export const usePushNotifications = () => {
    */
   const requestPermission = useCallback(async (): Promise<boolean> => {
     try {
-      const permission = await Notification.requestPermission()
+      const permission = await Notification.requestPermission();
 
-      if (permission !== 'granted') {
-        setPermissionGranted(false)
-        return false
+      if (permission !== "granted") {
+        setPermissionGranted(false);
+        return false;
       }
 
-      const messaging = getFirebaseMessaging()
-      if (!messaging) return false
+      const messaging = getFirebaseMessaging();
+      if (!messaging) return false;
 
-      const token = await getToken(messaging, { vapidKey: VAPID_KEY })
+      const token = await getToken(messaging, { vapidKey: VAPID_KEY });
 
-      if (!token) return false
+      if (!token) return false;
 
-      await api.post('/push-subscriptions', {
-        fcm_token:   token,
-        device_type: 'web',
-      })
+      await api.post("/push-subscriptions", {
+        fcm_token: token,
+        device_type: "web",
+      });
 
-      setFcmToken(token)
-      setPermissionGranted(true)
-      return true
+      setFcmToken(token);
+      setPermissionGranted(true);
+      return true;
     } catch {
-      setPermissionGranted(false)
-      return false
+      setPermissionGranted(false);
+      return false;
     }
-  }, [setFcmToken, setPermissionGranted])
+  }, [setFcmToken, setPermissionGranted]);
 
   const subscribeFixture = useCallback(
     async (fixtureApiId: number) => {
-      if (!fcmToken) return
+      if (!fcmToken) return;
 
-      await api.patch('/push-subscriptions/subscribe', {
-        fcm_token:   fcmToken,
-        fixture_id:  fixtureApiId,
-      })
+      await api.patch("/push-subscriptions/subscribe", {
+        fcm_token: fcmToken,
+        fixture_id: fixtureApiId,
+      });
 
-      subscribeToFixture(fixtureApiId)
+      subscribeToFixture(fixtureApiId);
     },
-    [fcmToken, subscribeToFixture]
-  )
+    [fcmToken, subscribeToFixture],
+  );
 
   const unsubscribeFixture = useCallback(
     async (fixtureApiId: number) => {
-      if (!fcmToken) return
+      if (!fcmToken) return;
 
-      await api.patch('/push-subscriptions/unsubscribe', {
-        fcm_token:   fcmToken,
-        fixture_id:  fixtureApiId,
-      })
+      await api.patch("/push-subscriptions/unsubscribe", {
+        fcm_token: fcmToken,
+        fixture_id: fixtureApiId,
+      });
 
-      unsubscribeFromFixture(fixtureApiId)
+      unsubscribeFromFixture(fixtureApiId);
     },
-    [fcmToken, unsubscribeFromFixture]
-  )
+    [fcmToken, unsubscribeFromFixture],
+  );
 
   return {
     fcmToken,
@@ -84,5 +84,5 @@ export const usePushNotifications = () => {
     requestPermission,
     subscribeFixture,
     unsubscribeFixture,
-  }
-}
+  };
+};

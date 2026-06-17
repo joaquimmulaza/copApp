@@ -1,5 +1,5 @@
 // TypingIndicator — animated dots while Gemini is generating a response
-import { motion } from 'framer-motion'
+import { motion } from "framer-motion";
 
 const DOT_VARIANTS = {
   animate: (i: number) => ({
@@ -8,10 +8,10 @@ const DOT_VARIANTS = {
       delay: i * 0.15,
       duration: 0.6,
       repeat: Infinity,
-      ease: 'easeInOut',
+      ease: "easeInOut",
     },
   }),
-}
+};
 
 export const TypingIndicator = () => (
   <div
@@ -31,4 +31,4 @@ export const TypingIndicator = () => (
     ))}
     <span className="sr-only">Gemini está a processar a resposta</span>
   </div>
-)
+);

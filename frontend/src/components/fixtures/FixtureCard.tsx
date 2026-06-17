@@ -16,35 +16,37 @@ import {
   useRef,
   useEffect,
   type ReactNode,
-} from 'react'
-import { motion } from 'framer-motion'
-import { cn, isLive, isFinished, formatKickoff } from '@/lib/utils'
-import { LiveBadge } from '@/components/common/LiveBadge'
-import { TeamLogo } from '@/components/common/TeamLogo'
-import { fadeIn, fadeInTransition } from '@/lib/animations'
-import type { FixtureSummary } from '@/types/fixture'
+} from "react";
+import { motion } from "framer-motion";
+import { cn, isLive, isFinished, formatKickoff } from "@/lib/utils";
+import { LiveBadge } from "@/components/common/LiveBadge";
+import { TeamLogo } from "@/components/common/TeamLogo";
+import { fadeIn, fadeInTransition } from "@/lib/animations";
+import type { FixtureSummary } from "@/types/fixture";
 
 // ─── Context ─────────────────────────────────────────────────
 interface FixtureCardContextValue {
-  readonly fixture: FixtureSummary
-  readonly live: boolean
-  readonly finished: boolean
+  readonly fixture: FixtureSummary;
+  readonly live: boolean;
+  readonly finished: boolean;
 }
 
-const FixtureCardContext = createContext<FixtureCardContextValue | null>(null)
+const FixtureCardContext = createContext<FixtureCardContextValue | null>(null);
 
 function useFixtureCard(): FixtureCardContextValue {
-  const ctx = useContext(FixtureCardContext)
+  const ctx = useContext(FixtureCardContext);
   if (!ctx) {
-    throw new Error('FixtureCard sub-components must be used inside <FixtureCard>')
+    throw new Error(
+      "FixtureCard sub-components must be used inside <FixtureCard>",
+    );
   }
-  return ctx
+  return ctx;
 }
 
 // ─── Sub-component: Teams ─────────────────────────────────────
 // Renders home and away flags + names in Bricolage Grotesque
 function Teams() {
-  const { fixture } = useFixtureCard()
+  const { fixture } = useFixtureCard();
 
   return (
     <div className="flex items-center justify-between gap-3">
@@ -58,8 +60,8 @@ function Teams() {
         />
         <span
           className={cn(
-            'font-display font-semibold text-sm leading-tight truncate',
-            'text-foreground',
+            "font-display font-semibold text-sm leading-tight truncate",
+            "text-foreground",
           )}
           title={fixture.home_team.name}
         >
@@ -74,8 +76,8 @@ function Teams() {
       <div className="flex flex-1 items-center gap-2 justify-end min-w-0">
         <span
           className={cn(
-            'font-display font-semibold text-sm leading-tight truncate text-right',
-            'text-foreground',
+            "font-display font-semibold text-sm leading-tight truncate text-right",
+            "text-foreground",
           )}
           title={fixture.away_team.name}
         >
@@ -89,41 +91,40 @@ function Teams() {
         />
       </div>
     </div>
-  )
+  );
 }
 
 // ─── Sub-component: Score ─────────────────────────────────────
 // Renders the score / kickoff time centred between the team rows.
 // Applies CSS animate-score-update class when a live score changes.
 function Score() {
-  const { fixture, live, finished } = useFixtureCard()
+  const { fixture, live, finished } = useFixtureCard();
 
-  const hasScore =
-    fixture.home_score !== null && fixture.away_score !== null
+  const hasScore = fixture.home_score !== null && fixture.away_score !== null;
 
   // Detect score changes and apply CSS animation imperatively
-  const scoreRef = useRef<HTMLDivElement>(null)
-  const prevHomeRef = useRef<number | null>(fixture.home_score)
-  const prevAwayRef = useRef<number | null>(fixture.away_score)
+  const scoreRef = useRef<HTMLDivElement>(null);
+  const prevHomeRef = useRef<number | null>(fixture.home_score);
+  const prevAwayRef = useRef<number | null>(fixture.away_score);
 
   useEffect(() => {
-    if (!live || !scoreRef.current) return
+    if (!live || !scoreRef.current) return;
 
     const changed =
       prevHomeRef.current !== fixture.home_score ||
-      prevAwayRef.current !== fixture.away_score
+      prevAwayRef.current !== fixture.away_score;
 
     if (changed) {
-      const el = scoreRef.current
-      el.classList.remove('animate-score-update')
+      const el = scoreRef.current;
+      el.classList.remove("animate-score-update");
       // Trigger reflow so CSS re-applies the animation from frame 0
-      void el.offsetWidth
-      el.classList.add('animate-score-update')
+      void el.offsetWidth;
+      el.classList.add("animate-score-update");
     }
 
-    prevHomeRef.current = fixture.home_score
-    prevAwayRef.current = fixture.away_score
-  })
+    prevHomeRef.current = fixture.home_score;
+    prevAwayRef.current = fixture.away_score;
+  });
 
   return (
     <div
@@ -138,9 +139,9 @@ function Score() {
       {hasScore ? (
         <span
           className={cn(
-            'font-mono tabular-nums font-bold leading-none select-none',
-            live ? 'text-2xl text-foreground' : 'text-xl text-muted-foreground',
-            finished && 'text-foreground',
+            "font-mono tabular-nums font-bold leading-none select-none",
+            live ? "text-2xl text-foreground" : "text-xl text-muted-foreground",
+            finished && "text-foreground",
           )}
         >
           {fixture.home_score}
@@ -153,13 +154,13 @@ function Score() {
         </span>
       )}
     </div>
-  )
+  );
 }
 
 // ─── Sub-component: Status ────────────────────────────────────
 // Renders LiveBadge, "FT", or the round/group label
 function Status() {
-  const { fixture, live, finished } = useFixtureCard()
+  const { fixture, live, finished } = useFixtureCard();
 
   return (
     <div
@@ -171,11 +172,15 @@ function Status() {
         <LiveBadge elapsed={fixture.elapsed_minutes} />
       ) : finished ? (
         <span className="text-xs font-mono font-semibold text-muted-foreground uppercase tracking-widest">
-          {fixture.status_short === 'AET' ? 'AET' : fixture.status_short === 'PEN' ? 'PEN' : 'FT'}
+          {fixture.status_short === "AET"
+            ? "AET"
+            : fixture.status_short === "PEN"
+              ? "PEN"
+              : "FT"}
         </span>
       ) : (
         <span className="text-xs font-sans text-muted-foreground truncate max-w-48 text-center">
-          {fixture.round ?? fixture.group_name ?? 'Fase de Grupos'}
+          {fixture.round ?? fixture.group_name ?? "Fase de Grupos"}
         </span>
       )}
 
@@ -189,23 +194,19 @@ function Status() {
         </span>
       )}
     </div>
-  )
+  );
 }
 
 // ─── Root Component ───────────────────────────────────────────
 interface FixtureCardProps {
-  readonly fixture: FixtureSummary
-  readonly className?: string
-  readonly children: ReactNode
+  readonly fixture: FixtureSummary;
+  readonly className?: string;
+  readonly children: ReactNode;
 }
 
-function FixtureCardRoot({
-  fixture,
-  className,
-  children,
-}: FixtureCardProps) {
-  const live     = isLive(fixture.status_short)
-  const finished = isFinished(fixture.status_short)
+function FixtureCardRoot({ fixture, className, children }: FixtureCardProps) {
+  const live = isLive(fixture.status_short);
+  const finished = isFinished(fixture.status_short);
 
   return (
     <FixtureCardContext.Provider value={{ fixture, live, finished }}>
@@ -216,9 +217,10 @@ function FixtureCardRoot({
         exit="exit"
         transition={fadeInTransition}
         className={cn(
-          'card-glass relative p-4 gold-hover cursor-default',
-          'transition-colors duration-150',
-          live && 'border border-danger/20 shadow-[0_0_16px_rgba(239,68,68,0.06)]',
+          "card-glass relative p-4 gold-hover cursor-default",
+          "transition-colors duration-150",
+          live &&
+            "border border-danger/20 shadow-[0_0_16px_rgba(239,68,68,0.06)]",
           className,
         )}
         aria-label={`${fixture.home_team.name} vs ${fixture.away_team.name}`}
@@ -226,7 +228,7 @@ function FixtureCardRoot({
         {children}
       </motion.article>
     </FixtureCardContext.Provider>
-  )
+  );
 }
 
 // ─── Attach sub-components ────────────────────────────────────
@@ -234,4 +236,4 @@ export const FixtureCard = Object.assign(FixtureCardRoot, {
   Teams,
   Score,
   Status,
-})
+});
