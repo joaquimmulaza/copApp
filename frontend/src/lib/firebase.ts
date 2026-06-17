@@ -24,6 +24,15 @@ const FIREBASE_APP_ID = import.meta.env.VITE_FIREBASE_APP_ID as string | undefin
 // ─── Singletons — initialise once, share across the app ──────────────────────
 let _app: FirebaseApp | null = null;
 let _messaging: Messaging | null = null;
+let _swRegistration: ServiceWorkerRegistration | null = null;
+
+/**
+ * Returns the FCM Service Worker registration singleton, or null if not yet
+ * registered. Call registerFcmServiceWorker() early (e.g. App.tsx) so this
+ * is populated before the user requests a push token.
+ */
+export const getFcmSwRegistration = (): ServiceWorkerRegistration | null =>
+  _swRegistration;
 
 /**
  * Returns (or creates) the Firebase app singleton.
@@ -89,14 +98,20 @@ export const registerFcmServiceWorker =
   async (): Promise<ServiceWorkerRegistration | null> => {
     if (!("serviceWorker" in navigator)) return null;
 
+    // Return cached registration if already active
+    if (_swRegistration?.active) return _swRegistration;
+
     try {
       const registration = await navigator.serviceWorker.register(
         "/firebase-messaging-sw.js",
         { scope: "/" }
       );
 
-      // Wait for the SW to be active before returning
+      // Wait for the SW to be in an active state
       await navigator.serviceWorker.ready;
+
+      // Cache the registration so getToken() can reference it
+      _swRegistration = registration;
 
       console.info(
         "[FCM] Service worker registered successfully:",

@@ -20,7 +20,11 @@
 import { useCallback, useEffect } from "react";
 import { getToken, onMessage, type MessagePayload } from "firebase/messaging";
 import { toast } from "sonner";
-import { getFirebaseMessaging } from "@/lib/firebase";
+import {
+  getFirebaseMessaging,
+  getFcmSwRegistration,
+  registerFcmServiceWorker,
+} from "@/lib/firebase";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { api } from "@/lib/axios";
 
@@ -121,7 +125,22 @@ export const usePushNotifications = (): UsePushNotificationsReturn => {
         return false;
       }
 
-      // 3. Retrieve or refresh the FCM token
+      // 3. Ensure SW is active — use the cached registration from bootstrap;
+      //    fall back to on-demand registration if App.tsx bootstrap raced.
+      let swRegistration = getFcmSwRegistration();
+      if (!swRegistration) {
+        swRegistration = await registerFcmServiceWorker();
+      }
+
+      if (!swRegistration?.active) {
+        toast.error(
+          "Serviço de mensagens indisponível. Verifique se o browser suporta PWA.",
+          { duration: 4000 }
+        );
+        return false;
+      }
+
+      // 4. Retrieve or refresh the FCM token
       // VAPID_KEY must be set; getToken requires a string
       if (!VAPID_KEY) {
         console.error("[FCM] VITE_FIREBASE_VAPID_KEY is not set.");
@@ -130,7 +149,7 @@ export const usePushNotifications = (): UsePushNotificationsReturn => {
 
       const token = await getToken(messaging, {
         vapidKey: VAPID_KEY,
-        serviceWorkerRegistration: await navigator.serviceWorker.ready,
+        serviceWorkerRegistration: swRegistration,
       });
 
       if (!token) {
