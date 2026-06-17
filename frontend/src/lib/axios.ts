@@ -1,5 +1,4 @@
 import axios from "axios";
-import { API_BASE_URL } from "@/lib/constants";
 
 // ─── Configured Axios instance ────────────────────────────────
 // All API calls should import this instead of the bare axios module.
