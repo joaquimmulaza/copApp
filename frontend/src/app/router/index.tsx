@@ -13,12 +13,12 @@ const AiPage = lazy(() => import("@/pages/AiPage"));
 
 // Suspense fallback — reuse the skeleton card for a smooth transition
 const PageFallback = () => (
-  <div className="page-wrapper flex flex-col gap-4 py-8">
+  <div className="flex flex-col gap-4">
     <SkeletonCard />
     <SkeletonCard />
     <SkeletonCard />
   </div>
-);
+)
 
 export const AppRouter = () => (
   <BrowserRouter>

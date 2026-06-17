@@ -46,7 +46,7 @@ const HomePage = () => {
   const today = format(new Date(), "d 'de' MMMM yyyy", { locale: ptBR });
 
   return (
-    <div className="animate-fade-in py-6">
+    <div className="animate-fade-in">
       {/* ── Page header ─────────────────────────────────────── */}
       <motion.header
         variants={fadeIn}

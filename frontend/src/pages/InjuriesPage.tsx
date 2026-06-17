@@ -59,7 +59,7 @@ export default function InjuriesPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="page-wrapper py-8 flex flex-col gap-6"
+      className="flex flex-col gap-6"
     >
       {/* Header section with page title and description */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
