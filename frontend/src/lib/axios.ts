@@ -4,7 +4,7 @@ import { API_BASE_URL } from "@/lib/constants";
 // ─── Configured Axios instance ────────────────────────────────
 // All API calls should import this instead of the bare axios module.
 export const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: '/api',
   timeout: 10_000,
   headers: {
     Accept: "application/json",

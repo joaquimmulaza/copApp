@@ -28,6 +28,8 @@ export interface GroupStandings {
   readonly standings: Standing[];
 }
 
+export type GroupStandingsMap = Record<string, Standing[]>;
+
 export interface StandingsResponse {
-  readonly data: GroupStandings[];
+  readonly data: GroupStandingsMap;
 }
