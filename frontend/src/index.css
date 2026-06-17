@@ -1,0 +1,368 @@
+/* ═══════════════════════════════════════════════════════════════
+   CopApp — Global Styles
+   Sistema de Design: "Quiet Luxury Dark"
+   Ordem: fonts → variables → tailwind directives → base → utilities
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Google Fonts ─────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Bricolage+Grotesque:wght@400;500;600;700&display=swap');
+
+/* ─── Tailwind Directives ──────────────────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ════════════════════════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES — Quiet Luxury Dark
+   All colour tokens are defined here. The Tailwind config maps
+   colour utilities directly to these variables, so changing a
+   single variable instantly propagates to every component.
+   ════════════════════════════════════════════════════════════════ */
+
+@layer base {
+  :root {
+    /* ─── Backgrounds ──────────────────────────────────────── */
+    --background:        #0A0C10;   /* Preto azulado profundo — canvas principal */
+    --surface:           #111318;   /* Cards, painéis */
+    --surface-elevated:  #181C24;   /* Modais, drawers, dropdowns */
+    --surface-overlay:   #1E2330;   /* Hover states, seleções */
+
+    /* ─── Borders & Dividers ───────────────────────────────── */
+    --border:            #242938;   /* Bordas padrão (finas, discretas) */
+    --border-strong:     #2E3447;   /* Bordas de foco ou ênfase */
+
+    /* ─── Text ─────────────────────────────────────────────── */
+    --foreground:        #E8EAF0;   /* Texto primário */
+    --muted-foreground:  #6B7280;   /* Labels, metadados, texto secundário */
+    --subtle:            #3D4454;   /* Placeholders, ícones inativos */
+
+    /* ─── Brand — Dourado FIFA ────────────────────────────── */
+    --gold:              #C9A84C;   /* Accent principal — destaque tático */
+    --gold-muted:        #8B6F32;   /* Versão desaturada para backgrounds */
+    --gold-glow:         rgba(201, 168, 76, 0.15); /* Glow em hover/foco */
+
+    /* ─── Semânticas ───────────────────────────────────────── */
+    --success:           #22C55E;   /* Gols, confirmação de escalação */
+    --success-muted:     rgba(34, 197, 94, 0.12);
+    --warning:           #F59E0B;   /* Cartões amarelos, lesões leves */
+    --warning-muted:     rgba(245, 158, 11, 0.12);
+    --danger:            #EF4444;   /* Cartões vermelhos, suspensões, erros */
+    --danger-muted:      rgba(239, 68, 68, 0.12);
+    --info:              #3B82F6;   /* Dados informativos, links */
+    --info-muted:        rgba(59, 130, 246, 0.12);
+
+    /* ─── Glassmorphism ───────────────────────────────────── */
+    --glass-bg:          rgba(17, 19, 24, 0.75);
+    --glass-border:      rgba(255, 255, 255, 0.06);
+    --glass-blur:        blur(12px);
+
+    /* ─── Layout ──────────────────────────────────────────── */
+    --navbar-height:     64px;
+    --radius:            0.5rem;    /* Base radius — md=6px, sm=4px */
+
+    /* ─── shadcn/ui HSL tokens (required for component compat) ── */
+    /* Maps our palette into shadcn's expected HSL format          */
+    --primary:             43 60% 54%;         /* gold */
+    --primary-foreground:  0 0% 8%;            /* near-black on gold */
+    --secondary:           222 18% 15%;        /* surface */
+    --secondary-foreground: 220 13% 91%;       /* foreground */
+    --muted:               222 18% 12%;        /* slightly darker surface */
+    --muted-foreground-hsl: 220 9% 46%;        /* muted-foreground in HSL */
+    --accent:              222 20% 18%;        /* surface-elevated */
+    --accent-foreground:   220 13% 91%;
+    --destructive:         0 84% 60%;          /* danger */
+    --destructive-foreground: 0 0% 98%;
+    --card:                222 18% 12%;        /* surface */
+    --card-foreground:     220 13% 91%;
+    --popover:             222 20% 14%;        /* surface-elevated */
+    --popover-foreground:  220 13% 91%;
+    --input:               222 18% 14%;
+    --ring:                43 60% 54%;         /* gold for focus rings */
+  }
+
+  /* ─── Light mode overrides (secondary, user-toggled) ────────── */
+  .light {
+    --background:        #F8F9FC;
+    --surface:           #FFFFFF;
+    --surface-elevated:  #F1F3F8;
+    --surface-overlay:   #E8EBF2;
+    --border:            #DDE1EB;
+    --border-strong:     #C5CAD8;
+    --foreground:        #0F1117;
+    --muted-foreground:  #6B7280;
+    --subtle:            #9CA3AF;
+    --glass-bg:          rgba(255, 255, 255, 0.80);
+    --glass-border:      rgba(0, 0, 0, 0.08);
+    --glass-blur:        blur(12px);
+
+    /* shadcn overrides for light */
+    --primary:             43 60% 42%;
+    --secondary:           220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted:               220 14% 96%;
+    --muted-foreground-hsl: 215 16% 47%;
+    --accent:              220 14% 96%;
+    --accent-foreground:   222 47% 11%;
+    --card:                0 0% 100%;
+    --card-foreground:     222 47% 11%;
+    --popover:             0 0% 100%;
+    --popover-foreground:  222 47% 11%;
+    --input:               214 32% 91%;
+    --ring:                43 60% 42%;
+  }
+
+  /* ─── Global Base Resets ──────────────────────────────────────── */
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    /* Smooth scrolling across the app */
+    scroll-behavior: smooth;
+    /* Prevent layout shift from scrollbar appearance */
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-variation-settings: normal;
+    /* Prevent horizontal overflow on mobile */
+    overflow-x: hidden;
+    /* Improved text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Consistent focus ring using gold for all interactive elements */
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Custom scrollbar — subtle, matches the dark palette */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--surface);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
+  }
+
+  /* Number rendering — force tabular for scores and stats */
+  .font-mono,
+  [class*='tabular'] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   COMPONENT UTILITIES — Quiet Luxury customisation layer
+   These classes override or extend shadcn/ui component defaults
+   to match the project's visual identity.
+   ════════════════════════════════════════════════════════════════ */
+
+@layer components {
+
+  /* ─── Glassmorphism Card ─────────────────────────────────────── */
+  /* Used for: FixtureCard, GroupCard, AI panels                    */
+  .card-glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+  }
+
+  /* ─── Navigation Glassmorphism ──────────────────────────────── */
+  /* Fixed navbar with heavier blur for legibility over content     */
+  .nav-glass {
+    background: rgba(10, 12, 16, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Light mode nav override */
+  .light .nav-glass {
+    background: rgba(248, 249, 252, 0.90);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ─── Input Customisation ───────────────────────────────────── */
+  /* Overrides shadcn Input using the data-slot selector            */
+  [data-slot='input'] {
+    background: var(--surface);
+    border-color: var(--border);
+    border-radius: 8px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  [data-slot='input']:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+    outline: none;
+  }
+
+  /* ─── LIVE Badge ─────────────────────────────────────────────── */
+  /* Pulsing red indicator for live fixtures                        */
+  .badge-live {
+    background: var(--danger-muted);
+    color: var(--danger);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  /* ─── Skeleton Shimmer ──────────────────────────────────────── */
+  /* Gradient sweep skeleton — never blink, always shimmer          */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--surface) 25%,
+      var(--surface-elevated) 50%,
+      var(--surface) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* ─── Score Display ─────────────────────────────────────────── */
+  /* Wrapper for live scores — triggers animation on data change    */
+  .score-live {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: 1.875rem; /* text-3xl */
+    line-height: 1;
+    color: var(--foreground);
+  }
+
+  .score-live.score-updating {
+    animation: scoreUpdate 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ─── Status Indicators ─────────────────────────────────────── */
+  /* Injury / suspension / form indicators                          */
+  .status-success {
+    background: var(--success-muted);
+    color: var(--success);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+  }
+
+  .status-warning {
+    background: var(--warning-muted);
+    color: var(--warning);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+
+  .status-danger {
+    background: var(--danger-muted);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+
+  .status-info {
+    background: var(--info-muted);
+    color: var(--info);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+
+  /* ─── Page Wrapper ──────────────────────────────────────────── */
+  /* Standard page container — accounts for fixed navbar height    */
+  .page-wrapper {
+    min-height: calc(100vh - var(--navbar-height));
+    padding-top: var(--navbar-height);
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .page-wrapper {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-wrapper {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* ─── Gold Accent Elements ──────────────────────────────────── */
+  /* Hover border / underline effect for interactive elements       */
+  .gold-hover {
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .gold-hover:hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px var(--gold-glow);
+  }
+
+  /* ─── Framer Motion placeholders ───────────────────────────── */
+  /* These ensure no layout shift before JS hydrates               */
+  [data-framer-appear] {
+    opacity: 0;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   KEYFRAMES — Defined here for use in both Tailwind config
+   (animation utilities) and direct CSS class animations.
+   ════════════════════════════════════════════════════════════════ */
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes scoreUpdate {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.15); color: #C9A84C; }
+  100% { transform: scale(1); }
+}
+
+@keyframes slideUp {
+  0%   { transform: translateY(8px); opacity: 0; }
+  100% { transform: translateY(0);   opacity: 1; }
+}
+
+@keyframes fadeIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ─── Print: suppress dark background ───────────────────────────── */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+}
+
+/* ─── Reduced Motion: disable animations system-wide ────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
