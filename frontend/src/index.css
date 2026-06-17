@@ -6,6 +6,9 @@
 
 /* ─── Google Fonts ─────────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Bricolage+Grotesque:wght@400;500;600;700&display=swap');
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
 
 /* ─── Tailwind Directives ──────────────────────────────────────── */
 @tailwind base;
@@ -22,18 +25,18 @@
 @layer base {
   :root {
     /* ─── Backgrounds ──────────────────────────────────────── */
-    --background:        #0A0C10;   /* Preto azulado profundo — canvas principal */
+    --background:           oklch(1 0 0);   /* Preto azulado profundo — canvas principal */
     --surface:           #111318;   /* Cards, painéis */
     --surface-elevated:  #181C24;   /* Modais, drawers, dropdowns */
     --surface-overlay:   #1E2330;   /* Hover states, seleções */
 
     /* ─── Borders & Dividers ───────────────────────────────── */
-    --border:            #242938;   /* Bordas padrão (finas, discretas) */
+    --border:           oklch(0.922 0 0);   /* Bordas padrão (finas, discretas) */
     --border-strong:     #2E3447;   /* Bordas de foco ou ênfase */
 
     /* ─── Text ─────────────────────────────────────────────── */
-    --foreground:        #E8EAF0;   /* Texto primário */
-    --muted-foreground:  #6B7280;   /* Labels, metadados, texto secundário */
+    --foreground:           oklch(0.145 0 0);   /* Texto primário */
+    --muted-foreground:           oklch(0.556 0 0);   /* Labels, metadados, texto secundário */
     --subtle:            #3D4454;   /* Placeholders, ícones inativos */
 
     /* ─── Brand — Dourado FIFA ────────────────────────────── */
@@ -58,26 +61,26 @@
 
     /* ─── Layout ──────────────────────────────────────────── */
     --navbar-height:     64px;
-    --radius:            0.5rem;    /* Base radius — md=6px, sm=4px */
+    --radius:           0.625rem;    /* Base radius — md=6px, sm=4px */
 
     /* ─── shadcn/ui HSL tokens (required for component compat) ── */
     /* Maps our palette into shadcn's expected HSL format          */
-    --primary:             43 60% 54%;         /* gold */
-    --primary-foreground:  0 0% 8%;            /* near-black on gold */
-    --secondary:           222 18% 15%;        /* surface */
-    --secondary-foreground: 220 13% 91%;       /* foreground */
-    --muted:               222 18% 12%;        /* slightly darker surface */
+    --primary:           oklch(0.205 0 0);         /* gold */
+    --primary-foreground:           oklch(0.985 0 0);            /* near-black on gold */
+    --secondary:           oklch(0.97 0 0);        /* surface */
+    --secondary-foreground:           oklch(0.205 0 0);       /* foreground */
+    --muted:           oklch(0.97 0 0);        /* slightly darker surface */
     --muted-foreground-hsl: 220 9% 46%;        /* muted-foreground in HSL */
-    --accent:              222 20% 18%;        /* surface-elevated */
-    --accent-foreground:   220 13% 91%;
-    --destructive:         0 84% 60%;          /* danger */
+    --accent:           oklch(0.97 0 0);        /* surface-elevated */
+    --accent-foreground:           oklch(0.205 0 0);
+    --destructive:           oklch(0.577 0.245 27.325);          /* danger */
     --destructive-foreground: 0 0% 98%;
-    --card:                222 18% 12%;        /* surface */
-    --card-foreground:     220 13% 91%;
-    --popover:             222 20% 14%;        /* surface-elevated */
-    --popover-foreground:  220 13% 91%;
-    --input:               222 18% 14%;
-    --ring:                43 60% 54%;         /* gold for focus rings */
+    --card:           oklch(1 0 0);        /* surface */
+    --card-foreground:           oklch(0.145 0 0);
+    --popover:           oklch(1 0 0);        /* surface-elevated */
+    --popover-foreground:           oklch(0.145 0 0);
+    --input:           oklch(0.922 0 0);
+    --ring:           oklch(0.708 0 0);         /* gold for focus rings */         --chart-1:           oklch(0.87 0 0);         --chart-2:           oklch(0.556 0 0);         --chart-3:           oklch(0.439 0 0);         --chart-4:           oklch(0.371 0 0);         --chart-5:           oklch(0.269 0 0);         --sidebar:           oklch(0.985 0 0);         --sidebar-foreground:           oklch(0.145 0 0);         --sidebar-primary:           oklch(0.205 0 0);         --sidebar-primary-foreground:           oklch(0.985 0 0);         --sidebar-accent:           oklch(0.97 0 0);         --sidebar-accent-foreground:           oklch(0.205 0 0);         --sidebar-border:           oklch(0.922 0 0);         --sidebar-ring:           oklch(0.708 0 0);
   }
 
   /* ─── Light mode overrides (secondary, user-toggled) ────────── */
@@ -113,7 +116,7 @@
 
   /* ─── Global Base Resets ──────────────────────────────────────── */
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
     box-sizing: border-box;
   }
 
@@ -122,6 +125,7 @@
     scroll-behavior: smooth;
     /* Prevent layout shift from scrollbar appearance */
     scrollbar-gutter: stable;
+    @apply font-sans;
   }
 
   body {
@@ -135,6 +139,7 @@
     /* Improved text rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    @apply bg-background text-foreground;
   }
 
   /* Consistent focus ring using gold for all interactive elements */
@@ -167,6 +172,43 @@
   .font-mono,
   [class*='tabular'] {
     font-variant-numeric: tabular-nums;
+  }
+  .theme {
+    --font-heading:           var(--font-sans);
+    --font-sans:           'Geist Variable', sans-serif;
+  }
+  .dark {
+    --background:           oklch(0.145 0 0);
+    --foreground:           oklch(0.985 0 0);
+    --card:           oklch(0.205 0 0);
+    --card-foreground:           oklch(0.985 0 0);
+    --popover:           oklch(0.205 0 0);
+    --popover-foreground:           oklch(0.985 0 0);
+    --primary:           oklch(0.922 0 0);
+    --primary-foreground:           oklch(0.205 0 0);
+    --secondary:           oklch(0.269 0 0);
+    --secondary-foreground:           oklch(0.985 0 0);
+    --muted:           oklch(0.269 0 0);
+    --muted-foreground:           oklch(0.708 0 0);
+    --accent:           oklch(0.269 0 0);
+    --accent-foreground:           oklch(0.985 0 0);
+    --destructive:           oklch(0.704 0.191 22.216);
+    --border:           oklch(1 0 0 / 10%);
+    --input:           oklch(1 0 0 / 15%);
+    --ring:           oklch(0.556 0 0);
+    --chart-1:           oklch(0.87 0 0);
+    --chart-2:           oklch(0.556 0 0);
+    --chart-3:           oklch(0.439 0 0);
+    --chart-4:           oklch(0.371 0 0);
+    --chart-5:           oklch(0.269 0 0);
+    --sidebar:           oklch(0.205 0 0);
+    --sidebar-foreground:           oklch(0.985 0 0);
+    --sidebar-primary:           oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground:           oklch(0.985 0 0);
+    --sidebar-accent:           oklch(0.269 0 0);
+    --sidebar-accent-foreground:           oklch(0.985 0 0);
+    --sidebar-border:           oklch(1 0 0 / 10%);
+    --sidebar-ring:           oklch(0.556 0 0);
   }
 }
 
