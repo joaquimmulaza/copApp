@@ -2,47 +2,88 @@
 // Shows chip selector and AI-generated tactical insight
 import { ContextChips } from "@/components/gemini/ContextChips";
 import { TypingIndicator } from "@/components/gemini/TypingIndicator";
+import { TacticalFlash as VisualTacticalFlash } from "@/components/gemini/TacticalFlash";
 import { useGeminiChat } from "@/hooks/useGeminiChat";
-import { useState } from "react";
-import type { GeminiChipId } from "@/lib/constants";
+import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface TacticalFlashProps {
   readonly fixtureId: number;
 }
 
 export const TacticalFlash = ({ fixtureId }: TacticalFlashProps) => {
-  const [activeChip, setActiveChip] = useState<GeminiChipId | null>(null);
-  const { sendMessage, isLoading, messages } = useGeminiChat(fixtureId);
+  const { activeChip, selectChip, analysis, isLoading, error } = useGeminiChat(fixtureId);
 
-  const handleChipSelect = (chipId: GeminiChipId) => {
-    setActiveChip(chipId);
-    void sendMessage(`Analisa o confronto com foco em: ${chipId}`, chipId);
-  };
-
-  const lastAssistantMessage = messages
-    .filter((m) => m.role === "assistant")
-    .slice(-1)[0];
+  // Set default chip to tactical_flash if none is selected
+  useEffect(() => {
+    if (!activeChip) {
+      selectChip("tactical_flash");
+    }
+  }, [activeChip, selectChip]);
 
   return (
     <section
       aria-label="Análise tática por IA"
-      className="card-glass p-4 flex flex-col gap-4"
+      className="flex flex-col gap-4 animate-fade-in"
     >
-      <h2 className="font-display font-semibold text-base">⚡ Flash Tático</h2>
+      <div className="card-glass p-4 flex flex-col gap-4">
+        <h2 className="font-display font-semibold text-sm uppercase tracking-wide text-muted-foreground">
+          ⚡ Análise por IA
+        </h2>
 
-      <ContextChips
-        activeChip={activeChip}
-        onSelect={handleChipSelect}
-        disabled={isLoading}
-      />
+        <ContextChips
+          activeChip={activeChip}
+          onSelect={selectChip}
+          disabled={isLoading}
+        />
+      </div>
 
-      {isLoading && <TypingIndicator />}
-
-      {lastAssistantMessage && !isLoading && (
-        <p className="text-sm text-foreground leading-relaxed">
-          {lastAssistantMessage.content}
-        </p>
-      )}
+      <div className="relative min-h-[140px]">
+        <AnimatePresence mode="wait">
+          {isLoading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25 }}
+              className="flex justify-center items-center py-12"
+            >
+              <TypingIndicator />
+            </motion.div>
+          ) : error ? (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="card-glass p-6 text-center border border-danger/20"
+            >
+              <p className="text-danger text-sm">{error}</p>
+            </motion.div>
+          ) : analysis ? (
+            <motion.div
+              key="analysis"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <VisualTacticalFlash analysis={analysis} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="card-glass p-8 text-center text-muted-foreground text-sm"
+            >
+              Clica em um dos chips acima para iniciar a análise por IA.
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </section>
   );
 };

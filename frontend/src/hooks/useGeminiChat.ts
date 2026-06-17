@@ -1,102 +1,170 @@
-import { useCallback, useReducer } from "react";
+import { useState, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
-import type {
-  ChatMessage,
-  GeminiChatRequest,
-  GeminiChatResponse,
-} from "@/types/gemini";
+import { QUERY_KEYS } from "@/lib/constants";
 import type { GeminiChipId } from "@/lib/constants";
+import type { ChatMessage } from "@/types/gemini";
 
-interface GeminiState {
-  readonly messages: ChatMessage[];
-  readonly isLoading: boolean;
-  readonly error: string | null;
+export interface GeminiAnalysisResponse {
+  readonly fixture_id: number;
+  readonly chip_type: GeminiChipId;
+  readonly analysis: string;
 }
 
-type GeminiAction =
-  | { type: "ADD_USER_MESSAGE"; payload: ChatMessage }
-  | { type: "ADD_ASSISTANT_MESSAGE"; payload: ChatMessage }
-  | { type: "SET_LOADING"; payload: boolean }
-  | { type: "SET_ERROR"; payload: string | null }
-  | { type: "CLEAR" };
+export const useGeminiChat = (
+  fixtureId: number,
+  initialChip: GeminiChipId | null = null
+) => {
+  const [activeChip, setActiveChip] = useState<GeminiChipId | null>(initialChip);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-const reducer = (state: GeminiState, action: GeminiAction): GeminiState => {
-  switch (action.type) {
-    case "ADD_USER_MESSAGE":
-    case "ADD_ASSISTANT_MESSAGE":
-      return { ...state, messages: [...state.messages, action.payload] };
-    case "SET_LOADING":
-      return { ...state, isLoading: action.payload };
-    case "SET_ERROR":
-      return { ...state, error: action.payload };
-    case "CLEAR":
-      return { messages: [], isLoading: false, error: null };
-    default:
-      return state;
-  }
-};
-
-export const useGeminiChat = (fixtureId: number) => {
-  const [state, dispatch] = useReducer(reducer, {
-    messages: [],
-    isLoading: false,
-    error: null,
+  // Fetch chip analysis using useQuery, which is automatically cached
+  const {
+    data: analysisData,
+    isLoading: isAnalysisLoading,
+    error: analysisError,
+  } = useQuery({
+    queryKey: QUERY_KEYS.geminiCache(fixtureId, activeChip as GeminiChipId),
+    queryFn: async (): Promise<GeminiAnalysisResponse> => {
+      const { data } = await api.get<GeminiAnalysisResponse>(
+        `/fixtures/${fixtureId}/analysis`,
+        {
+          params: { chip: activeChip },
+        }
+      );
+      return data;
+    },
+    enabled: !!fixtureId && !!activeChip,
+    staleTime: 10 * 60 * 1000, // 10 minutes cache TTL matches backend
   });
 
+  // A helper function to trigger chip analysis
+  const selectChip = useCallback((chipId: GeminiChipId) => {
+    setActiveChip(chipId);
+  }, []);
+
+  // Send message for free chat or trigger chip
   const sendMessage = useCallback(
     async (content: string, chipId?: GeminiChipId) => {
-      if (!content.trim() || state.isLoading) return;
+      const actualChip = chipId ?? null;
 
-      const userMessage: ChatMessage = {
+      if (actualChip) {
+        setActiveChip(actualChip);
+        return;
+      }
+
+      if (!content.trim()) return;
+
+      const userMsg: ChatMessage = {
         id: crypto.randomUUID(),
         role: "user",
         content: content.trim(),
         timestamp: Date.now(),
       };
 
-      dispatch({ type: "ADD_USER_MESSAGE", payload: userMessage });
-      dispatch({ type: "SET_LOADING", payload: true });
-      dispatch({ type: "SET_ERROR", payload: null });
+      setMessages((prev) => [...prev, userMsg]);
+
+      // Detect relevant chip based on message keywords
+      const text = content.toLowerCase();
+      let matchedChip: GeminiChipId = "tactical_flash";
+
+      if (
+        text.includes("desfalque") ||
+        text.includes("lesao") ||
+        text.includes("lesão") ||
+        text.includes("ausen") ||
+        text.includes("machuca") ||
+        text.includes("impacto") ||
+        text.includes("dm")
+      ) {
+        matchedChip = "injury_impact";
+      } else if (
+        text.includes("palpite") ||
+        text.includes("ganha") ||
+        text.includes("vence") ||
+        text.includes("aposta") ||
+        text.includes("odds") ||
+        text.includes("placar")
+      ) {
+        matchedChip = "guided_bet";
+      } else if (
+        text.includes("forma") ||
+        text.includes("recente") ||
+        text.includes("ultimos") ||
+        text.includes("últimos") ||
+        text.includes("historico") ||
+        text.includes("histórico")
+      ) {
+        matchedChip = "recent_form";
+      } else if (
+        text.includes("confronto") ||
+        text.includes("raio-x") ||
+        text.includes("raio x") ||
+        text.includes("versus") ||
+        text.includes("vs") ||
+        text.includes("h2h")
+      ) {
+        matchedChip = "head2head";
+      }
+
+      // Append typing indicator
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: "typing-indicator",
+          role: "assistant",
+          content: "",
+          timestamp: Date.now(),
+          isStreaming: true,
+        },
+      ]);
 
       try {
-        const body: GeminiChatRequest = {
-          fixture_id: fixtureId,
-          message: content.trim(),
-          chip_type: chipId ?? null,
-        };
-
-        const { data } = await api.post<GeminiChatResponse>(
-          "/gemini/chat",
-          body,
+        const { data } = await api.get<GeminiAnalysisResponse>(
+          `/fixtures/${fixtureId}/analysis`,
+          {
+            params: { chip: matchedChip },
+          }
         );
 
-        const assistantMessage: ChatMessage = {
+        const assistantMsg: ChatMessage = {
           id: crypto.randomUUID(),
           role: "assistant",
-          content: data.response,
+          content: data.analysis,
           timestamp: Date.now(),
         };
 
-        dispatch({ type: "ADD_ASSISTANT_MESSAGE", payload: assistantMessage });
+        setMessages((prev) =>
+          prev.filter((m) => m.id !== "typing-indicator").concat(assistantMsg)
+        );
       } catch {
-        dispatch({
-          type: "SET_ERROR",
-          payload:
+        const errorMsg: ChatMessage = {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content:
             "Não foi possível obter resposta do assistente. Tenta novamente.",
-        });
-      } finally {
-        dispatch({ type: "SET_LOADING", payload: false });
+          timestamp: Date.now(),
+        };
+        setMessages((prev) =>
+          prev.filter((m) => m.id !== "typing-indicator").concat(errorMsg)
+        );
       }
     },
-    [fixtureId, state.isLoading],
+    [fixtureId]
   );
 
-  const clearChat = useCallback(() => dispatch({ type: "CLEAR" }), []);
+  const clearChat = useCallback(() => {
+    setMessages([]);
+    setActiveChip(null);
+  }, []);
 
   return {
-    messages: state.messages,
-    isLoading: state.isLoading,
-    error: state.error,
+    activeChip,
+    selectChip,
+    analysis: analysisData?.analysis ?? null,
+    isLoading: isAnalysisLoading,
+    error: analysisError ? "Não foi possível obter a análise da IA." : null,
+    messages,
     sendMessage,
     clearChat,
   };

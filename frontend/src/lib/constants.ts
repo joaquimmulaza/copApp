@@ -42,7 +42,7 @@ export const GEMINI_CHIPS = [
   { id: "tactical_flash", label: "⚡ Flash Tático" },
   { id: "injury_impact", label: "🏥 Impacto das Ausências" },
   { id: "head2head", label: "📊 Raio-X do Confronto" },
-  { id: "guided_tip", label: "🎯 Palpite Guiado" },
+  { id: "guided_bet", label: "🎯 Palpite Guiado" },
   { id: "recent_form", label: "📈 Forma Recente" },
 ] as const;
 
