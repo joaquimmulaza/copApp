@@ -129,3 +129,20 @@ Schedule::job(SyncStandingsJob::class, queue: 'default')
     ->name('sync-standings-01h')
     ->description('Sincroniza classificações — fecho de jornada madrugada (01:00 UTC).')
     ->dailyAt('01:00');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CAMADA 3 — Dados em tempo real (Layer 3 Live Data)
+//
+// Corre a cada minuto para orquestrar o início do polling de escalações.
+// ─────────────────────────────────────────────────────────────────────────────
+
+Schedule::call(static function (\App\Services\LineupPollingService $service): void {
+    $service->dispatchUpcomingPolls();
+})
+    ->everyMinute()
+    ->timezone('UTC')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->name('orchestrate-lineup-polling')
+    ->description('Descobre jogos a iniciar nos próximos 70 minutos e dispara o ciclo de polling de escalações.');
+

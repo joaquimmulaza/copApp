@@ -6,6 +6,7 @@
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { InjuryBadge } from "@/components/injuries/InjuryBadge"
+import { InjuryTooltip } from "@/components/injuries/InjuryTooltip"
 import { PlayerAvatar } from "@/components/common/PlayerAvatar"
 import {
   playerCardVariant,
@@ -22,6 +23,17 @@ interface PlayerCardProps {
 export function PlayerCard({ player, status }: PlayerCardProps) {
   const isUnavailable = status?.is_active === true
 
+  const avatarZone = (
+    <div className="relative">
+      <PlayerAvatar name={player.name} photoUrl={player.photo_url} size="sm" />
+      {isUnavailable && (
+        <div className="absolute -top-1 -right-1">
+          <InjuryBadge type={status!.type} />
+        </div>
+      )}
+    </div>
+  )
+
   return (
     <motion.div
       layoutId={`player-${player.player_id}`}
@@ -35,14 +47,18 @@ export function PlayerCard({ player, status }: PlayerCardProps) {
         isUnavailable && "opacity-40",
       )}
     >
-      <div className="relative">
-        <PlayerAvatar name={player.name} photoUrl={player.photo_url} size="sm" />
-        {isUnavailable && (
-          <div className="absolute -top-1 -right-1">
-            <InjuryBadge type={status.type} />
-          </div>
-        )}
-      </div>
+      {isUnavailable && status ? (
+        <InjuryTooltip
+          type={status.type}
+          reason={status.reason}
+          expectedReturn={status.expected_return}
+          startDate={status.start_date}
+        >
+          {avatarZone}
+        </InjuryTooltip>
+      ) : (
+        avatarZone
+      )}
 
       <span className="text-xs text-muted-foreground truncate max-w-[80px] text-center">
         {player.name.split(" ").pop()}
