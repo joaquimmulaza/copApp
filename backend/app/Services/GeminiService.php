@@ -329,14 +329,18 @@ USER;
             $tokensUsed = (int) data_get($data, 'usageMetadata.candidatesTokenCount', 0);
 
             // ── Persist to cache with 10-minute TTL ─────────────────────────────────────
-            GeminiResponseCache::create([
-                'cache_key'      => $cacheKey,
-                'fixture_id_api' => $fixtureId,
-                'chip_type'      => $chipType,
-                'response'       => $analysisText,
-                'tokens_used'    => $tokensUsed > 0 ? $tokensUsed : null,
-                'expires_at'     => now()->addMinutes(self::CACHE_TTL_MINUTES),
-            ]);
+            // Correção SEC-02: Race Condition na escrita da cache
+            GeminiResponseCache::updateOrCreate(
+                ['cache_key' => $cacheKey],
+                [
+                    'fixture_id_api' => $fixtureId,
+                    'chip_type'      => $chipType,
+                    'response'       => $analysisText,
+                    'tokens_used'    => $tokensUsed > 0 ? $tokensUsed : null,
+                    'expires_at'     => now()->addMinutes(self::CACHE_TTL_MINUTES),
+                    'created_at'     => now(),
+                ]
+            );
 
             Log::info('[GeminiService] Response cached successfully', [
                 'cache_key'   => $cacheKey,

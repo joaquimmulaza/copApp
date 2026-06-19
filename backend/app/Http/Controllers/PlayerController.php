@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Log;
 
-final readonly class PlayerController extends Controller
+final class PlayerController extends Controller
 {
     /**
      * Display a listing of players.
@@ -27,9 +27,15 @@ final readonly class PlayerController extends Controller
         }
 
         if ($request->has('name')) {
-            $query->where('name', 'ILIKE', '%' . $request->string('name')->value() . '%')
-                ->orWhere('firstname', 'ILIKE', '%' . $request->string('name')->value() . '%')
-                ->orWhere('lastname', 'ILIKE', '%' . $request->string('name')->value() . '%');
+            $nameInput = mb_substr($request->string('name')->value(), 0, 100);
+            $escapedName = str_replace(['%', '_'], ['\%', '\_'], $nameInput);
+            $searchTerm = '%' . $escapedName . '%';
+
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'ILIKE', $searchTerm)
+                    ->orWhere('firstname', 'ILIKE', $searchTerm)
+                    ->orWhere('lastname', 'ILIKE', $searchTerm);
+            });
         }
 
         // Using simple pagination to protect budget/response size

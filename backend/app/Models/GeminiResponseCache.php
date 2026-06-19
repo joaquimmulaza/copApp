@@ -48,6 +48,7 @@ final class GeminiResponseCache extends Model
         'response',
         'tokens_used',
         'expires_at',
+        'created_at',
     ];
 
     /**

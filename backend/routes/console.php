@@ -141,8 +141,8 @@ Schedule::call(static function (\App\Services\LineupPollingService $service): vo
 })
     ->everyMinute()
     ->timezone('UTC')
+    ->name('orchestrate-lineup-polling')
     ->withoutOverlapping()
     ->onOneServer()
-    ->name('orchestrate-lineup-polling')
     ->description('Descobre jogos a iniciar nos próximos 70 minutos e dispara o ciclo de polling de escalações.');
 
