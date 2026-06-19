@@ -1,7 +1,7 @@
 // Navbar — glassmorphism top navigation with push notification toggle
 // Applies .nav-glass utility from index.css
 import { Link, NavLink } from "react-router-dom";
-import { Trophy, Calendar, Shield, HeartPulse, Bot, Bell, BellOff } from "lucide-react";
+import { Trophy, Calendar, Shield, HeartPulse, Bot, Bell, BellOff, Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/stores/themeStore";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
@@ -133,7 +133,7 @@ export const Navbar = () => {
             aria-label={`Mudar para modo ${theme === "dark" ? "claro" : "escuro"}`}
             className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-surface-overlay transition-colors"
           >
-            {theme === "dark" ? "☀️" : "🌙"}
+            {theme === "dark" ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
           </button>
         </div>
       </div>

@@ -7,6 +7,7 @@
 // Empty:   Contextual empty state
 
 import { AnimatePresence, motion } from "framer-motion";
+import { CalendarX, AlertTriangle } from "lucide-react";
 import { cn, getDateKey, formatDateLabel } from "@/lib/utils";
 import { groupBy } from "@/lib/utils";
 import { FixtureCard } from "./FixtureCard";
@@ -48,9 +49,7 @@ function EmptyState() {
       role="status"
       aria-label="Sem jogos para exibir"
     >
-      <span className="text-4xl mb-4 select-none" aria-hidden="true">
-        🏟️
-      </span>
+      <CalendarX className="size-10 mb-4 text-muted-foreground/50" aria-hidden="true" strokeWidth={1.5} />
       <p className="font-display font-semibold text-foreground text-lg mb-1">
         Sem jogos neste período
       </p>
@@ -75,9 +74,7 @@ function ErrorState({ message, onRetry }: ErrorStateProps) {
       className="flex flex-col items-center justify-center py-12 text-center gap-3"
       role="alert"
     >
-      <span className="text-3xl select-none" aria-hidden="true">
-        ⚠️
-      </span>
+      <AlertTriangle className="size-10 text-muted-foreground/50" aria-hidden="true" strokeWidth={1.5} />
       <p className="font-sans text-sm text-muted-foreground max-w-sm">
         {message}
       </p>

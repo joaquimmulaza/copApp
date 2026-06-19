@@ -18,6 +18,7 @@ import {
   type ReactNode,
 } from "react";
 import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 import { cn, isLive, isFinished, formatKickoff } from "@/lib/utils";
 import { LiveBadge } from "@/components/common/LiveBadge";
 import { TeamLogo } from "@/components/common/TeamLogo";
@@ -185,13 +186,11 @@ function Status() {
       )}
 
       {fixture.lineup_confirmed && !live && (
-        <span
-          className="text-xs font-mono text-success ml-1"
+        <Check
+          className="size-3 text-success ml-1"
           aria-label="Escalação confirmada"
           title="Escalação confirmada"
-        >
-          ✓
-        </span>
+        />
       )}
     </div>
   );

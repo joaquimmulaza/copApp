@@ -19,6 +19,8 @@ export interface Player {
   readonly photo_url: string | null;
   readonly position: Position | null;
   readonly number: string | null;
+  readonly stats?: PlayerStats | null;
+  readonly status?: import("./injury").PlayerStatus | null;
   readonly created_at: string;
   readonly updated_at: string;
 }
