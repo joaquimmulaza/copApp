@@ -299,12 +299,13 @@ USER;
             ],
         ];
 
-        $url = self::API_BASE . "/models/{$model}:generateContent?key={$apiKey}";
+        $url = self::API_BASE . "/models/{$model}:generateContent";
 
         try {
             $response = Http::timeout(30)
                 ->retry(2, 1000)
                 ->withHeaders(['Content-Type' => 'application/json'])
+                ->withQueryParameters(['key' => $apiKey])
                 ->post($url, $requestBody);
 
             $response->throw(); // Throws RequestException on 4xx/5xx
